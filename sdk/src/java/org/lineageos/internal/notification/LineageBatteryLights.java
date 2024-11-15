@@ -47,7 +47,7 @@ public final class LineageBatteryLights {
 
     private final Context mContext;
 
-    private NotificationManager mNotificationManager;
+    private final NotificationManager mNotificationManager;
     private int mZenMode;
 
     public interface LedUpdater {
@@ -284,7 +284,7 @@ public final class LineageBatteryLights {
                     com.android.internal.R.integer.config_notificationsBatteryFullARGB),
                     UserHandle.USER_CURRENT);
 
-            // Adustable battery LED brightness.
+            // Adjustable battery LED brightness.
             if (mCanAdjustBrightness) {
                 // Battery brightness level
                 mBatteryBrightnessLevel = LineageSettings.System.getIntForUser(resolver,

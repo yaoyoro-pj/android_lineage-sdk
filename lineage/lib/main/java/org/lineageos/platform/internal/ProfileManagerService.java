@@ -85,19 +85,14 @@ public class ProfileManagerService extends LineageSystemService {
             UUID.fromString("a126d48a-aaef-47c4-baed-7f0e44aeffe5");
     private NotificationGroup mWildcardGroup;
 
-    private Context mContext;
-    private Handler mHandler;
+    private final Context mContext;
+    private final Handler mHandler;
     private boolean mDirty;
     private BackupManager mBackupManager;
     private ProfileTriggerHelper mTriggerHelper;
     private Profile mEmptyProfile;
 
-    private Runnable mBindKeyguard = new Runnable() {
-        @Override
-        public void run() {
-            bindKeyguard();
-        }
-    };
+    private final Runnable mBindKeyguard = this::bindKeyguard;
     private IKeyguardService mKeyguardService;
     private final ServiceConnection mKeyguardConnection = new ServiceConnection() {
         @Override
@@ -116,7 +111,7 @@ public class ProfileManagerService extends LineageSystemService {
         }
     };
 
-    private BroadcastReceiver mIntentReceiver = new BroadcastReceiver() {
+    private final BroadcastReceiver mIntentReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
@@ -290,8 +285,8 @@ public class ProfileManagerService extends LineageSystemService {
 
     private void initialize(boolean skipFile) {
         mTriggerHelper = new ProfileTriggerHelper(mContext, mHandler, this);
-        mProfiles = new HashMap<UUID, Profile>();
-        mProfileNames = new HashMap<String, UUID>();
+        mProfiles = new HashMap<>();
+        mProfileNames = new HashMap<>();
         mGroups = new HashMap<UUID, NotificationGroup>();
         mEmptyProfile = new Profile("EmptyProfile");
         mDirty = false;
@@ -301,9 +296,7 @@ public class ProfileManagerService extends LineageSystemService {
         if (!skipFile) {
             try {
                 loadFromFile();
-            } catch (XmlPullParserException e) {
-                init = true;
-            } catch (IOException e) {
+            } catch (XmlPullParserException | IOException e) {
                 init = true;
             }
         }
