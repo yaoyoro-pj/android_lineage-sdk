@@ -43,6 +43,7 @@ public class ChargingControlController extends LineageHealthFeature {
     private final ContentResolver mContentResolver;
     private ChargingControlNotification mChargingNotification;
     private LineageHealthBatteryBroadcastReceiver mBattReceiver;
+    private BroadcastReceiver mAlarmBroadcastReceiver;
 
     // Defaults
     private boolean mDefaultEnabled = false;
@@ -399,6 +400,26 @@ public class ChargingControlController extends LineageHealthFeature {
                 } else {
                     mChargingNotification.cancel();
                 }
+            }
+        }
+
+        if (mode == MODE_AUTO) {
+            if (mAlarmBroadcastReceiver == null) {
+                IntentFilter alarmChangedFilter = new IntentFilter(
+                        android.app.AlarmManager.ACTION_NEXT_ALARM_CLOCK_CHANGED);
+                mAlarmBroadcastReceiver = new BroadcastReceiver() {
+                    @Override
+                    public void onReceive(Context context, Intent intent) {
+                        Log.i(TAG, "Alarm changed, update charge times");
+                        updateChargeControl();
+                    }
+                };
+                mContext.registerReceiver(mAlarmBroadcastReceiver, alarmChangedFilter);
+            }
+        } else {
+            if (mAlarmBroadcastReceiver != null) {
+                mContext.unregisterReceiver(mAlarmBroadcastReceiver);
+                mAlarmBroadcastReceiver = null;
             }
         }
     }
