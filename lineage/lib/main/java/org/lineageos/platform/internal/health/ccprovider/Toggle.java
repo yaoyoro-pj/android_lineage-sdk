@@ -34,6 +34,8 @@ public class Toggle extends ChargingControlProvider {
 
     private final boolean mToggleSetAlways = mContext.getResources().getBoolean(
             R.bool.config_chargingControlToggleSetAlways);
+    private final boolean mResetToFalse = mContext.getResources().getBoolean(
+            R.bool.config_chargingControlToggleResetToFalse);
     private boolean mIsLimitSet;
     private long mSavedTargetTime;
     private long mEstimatedFullTime;
@@ -89,7 +91,7 @@ public class Toggle extends ChargingControlProvider {
 
     @Override
     public boolean requiresBatteryLevelMonitoring() {
-        return !isHALModeSupported(ChargingControlSupportedMode.BYPASS);
+        return !mResetToFalse && !isHALModeSupported(ChargingControlSupportedMode.BYPASS);
     }
 
     @Override
@@ -103,7 +105,7 @@ public class Toggle extends ChargingControlProvider {
     private boolean onStage(chgCtrlStage stage) {
         switch (stage) {
             case STAGE_NONE -> {
-                setChargingEnabled(true);
+                setChargingEnabled(!mResetToFalse);
                 return false;
             }
             case STAGE_INITIAL, STAGE_CONTINUE -> {
@@ -223,7 +225,7 @@ public class Toggle extends ChargingControlProvider {
     @Override
     protected void onReset() {
         try {
-            mChargingControl.setChargingEnabled(true);
+            mChargingControl.setChargingEnabled(!mResetToFalse);
             mIsLimitSet = false;
             mSavedTargetTime = 0;
             mEstimatedFullTime = 0;
