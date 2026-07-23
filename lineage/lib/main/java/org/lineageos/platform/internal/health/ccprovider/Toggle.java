@@ -105,7 +105,7 @@ public class Toggle extends ChargingControlProvider {
     private boolean onStage(chgCtrlStage stage) {
         switch (stage) {
             case STAGE_NONE -> {
-                if (mResetToFalse) setChargingEnabled(true);
+                if (!mResetToFalse) setChargingEnabled(true);
                 return false;
             }
             case STAGE_INITIAL, STAGE_CONTINUE -> {
