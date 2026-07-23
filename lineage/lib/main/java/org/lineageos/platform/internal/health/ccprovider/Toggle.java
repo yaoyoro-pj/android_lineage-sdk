@@ -97,7 +97,7 @@ public class Toggle extends ChargingControlProvider {
     @Override
     protected boolean onBatteryChanged(float currentPct, int targetPct) {
         mIsLimitSet = shouldStopCharging(currentPct, targetPct);
-        Log.i(TAG, "Current battery level: " + currentPct + ", target: " + targetPct +
+        Log.d(TAG, "Current battery level: " + currentPct + ", target: " + targetPct +
                 ", limit set: " + mIsLimitSet);
         return setChargingEnabled(!mIsLimitSet);
     }
