@@ -105,7 +105,7 @@ public class Toggle extends ChargingControlProvider {
     private boolean onStage(chgCtrlStage stage) {
         switch (stage) {
             case STAGE_NONE -> {
-                setChargingEnabled(!mResetToFalse);
+                if (mResetToFalse) setChargingEnabled(true);
                 return false;
             }
             case STAGE_INITIAL, STAGE_CONTINUE -> {
@@ -129,7 +129,7 @@ public class Toggle extends ChargingControlProvider {
 
         if (startTime > currentTime && stage != chgCtrlStage.STAGE_CONTINUE) {
             // Not yet entering user configured time frame
-            return chgCtrlStage.STAGE_NONE;
+            return mResetToFalse ? chgCtrlStage.STAGE_WAITING : chgCtrlStage.STAGE_NONE;
         }
 
         if (mSavedTargetTime != targetTime && (mSavedTargetTime == 0
